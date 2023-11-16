@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "575895008319",
+    "firebase_url": "https://socia-video-app-default-rtdb.firebaseio.com",
+    "project_id": "socia-video-app",
+    "storage_bucket": "socia-video-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:575895008319:android:fad3d937551ac04094b48a",
+        "android_client_info": {
+          "package_name": "com.example.video_application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "575895008319-qq1q7v375lpqb6ebs23vfa95rk6cqps8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2hq6OyjiMgEJNk0m4xdbcbznduULPy1c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "575895008319-qq1q7v375lpqb6ebs23vfa95rk6cqps8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "575895008319-8f91p6mhiq7vo6v9eigcrmkk138j59lq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "social.video.app.socialVideoApp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:575895008319:android:9ecd474cd03f26c194b48a",
+        "android_client_info": {
+          "package_name": "social.video.app.social_video_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "575895008319-qq1q7v375lpqb6ebs23vfa95rk6cqps8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2hq6OyjiMgEJNk0m4xdbcbznduULPy1c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "575895008319-qq1q7v375lpqb6ebs23vfa95rk6cqps8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "575895008319-8f91p6mhiq7vo6v9eigcrmkk138j59lq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "social.video.app.socialVideoApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
