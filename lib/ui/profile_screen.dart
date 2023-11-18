@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/utils.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 import 'package:video_application/modal_classes/user_login_model.dart';
 import 'package:video_application/modal_classes/user_model.dart';
+import 'package:video_application/modal_classes/user_videos_model.dart';
 import 'package:video_application/service/authentication/auth_notifier.dart';
 import 'package:video_application/service/authentication/auth_state.dart';
 import 'package:video_application/service/profile/like_videos/liked_videos_service.dart';
@@ -15,6 +17,10 @@ import 'package:video_application/service/profile/private_videos/private_videos_
 import 'package:video_application/service/profile/profile_service.dart';
 import 'package:get/get.dart';
 import 'package:video_application/service/profile/profile_videos/user_videos_service.dart';
+
+import '../service/profile/profile_videos/user_videos_notifier.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:riverpod_infinite_scroll/riverpod_infinite_scroll.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -117,65 +123,48 @@ class ProfileScreen extends ConsumerWidget {
                   Expanded(
                       child: TabBarView(
                     children: [
-                      profileProvider.when(
-                          data: (data) => profileProvider.isLoading ||
-                                  profileProvider.isRefreshing ||
-                                  profileProvider.isReloading
-                              ? const Align(
-                                  alignment: Alignment.center,
-                                  child: SizedBox(
-                                    height: 50,
-                                    width: 50,
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                )
-                              : GridView.builder(
-                                  itemCount: data.data?.length,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: 5,
-                                          mainAxisSpacing: 5),
-                                  itemBuilder: (context, index) =>
-                                      CachedNetworkImage(
-                                        imageUrl:
-                                            'https://thrillvideonew.s3.ap-south-1.amazonaws.com/gif/${data.data?[index].gifImage}',
-                                        imageBuilder:
-                                            (context, imageProvider) =>
-                                                Container(
-                                          width: context.width / 3,
-                                          height: context.height / 3,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover),
-                                          ),
-                                        ),
-                                        placeholder: (context, url) =>
-                                            const Align(
-                                          alignment: Alignment.center,
-                                          child: SizedBox(
-                                            height: 50,
-                                            width: 50,
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                        ),
-                                        errorWidget: (context, url, error) =>
-                                            CachedNetworkImage(
-                                                imageUrl:
-                                                    'https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/image-loading-failed-02.png'),
-                                      )),
-                          error: (error, trace) =>
-                              Text(error.toString() + trace.toString()),
-                          loading: () => const Align(
-                                alignment: Alignment.center,
-                                child: SizedBox(
-                                  height: 50,
-                                  width: 50,
-                                  child: CircularProgressIndicator(),
+                      RiverPagedBuilder<int, Datum>(
+                        firstPageKey: 0,
+                        limit: 9,
+                        provider: userVideoProvider,
+                        itemBuilder: (context, item, index) => CachedNetworkImage(
+                          imageUrl:
+                          'https://thrillvideonew.s3.ap-south-1.amazonaws.com/gif/${item.gifImage}',
+                          imageBuilder:
+                              (context, imageProvider) =>
+                              Container(
+                                width: context.width / 3,
+                                height: context.height / 3,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: imageProvider,
+                                      fit: BoxFit.cover),
                                 ),
-                              )),
+                              ),
+                          placeholder: (context, url) =>
+                          const Align(
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              height: 50,
+                              width: 50,
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              CachedNetworkImage(
+                                  imageUrl:
+                                  'https://icons.veryicon.com/png/o/education-technology/alibaba-big-data-oneui/image-loading-failed-02.png'),
+                        ),
+                        pagedBuilder: (controller, builder) => PagedGridView(
+                          pagingController: controller,
+                          builderDelegate: builder,
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                          ),
+                        ),
+                      ),
+
                       privateVideos.when(
                           data: (data) => privateVideos.isLoading ||
                                   privateVideos.isRefreshing ||

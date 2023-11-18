@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "575895008319-lee6q9cfotctnr5n9s8n49iuk96irfpf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.video_application",
+            "certificate_hash": "74a465a66ff05154eac28d0e860f1a61d12d35fa"
+          }
+        },
+        {
           "client_id": "575895008319-ssnglihefrck7v2c1jfu8ail853vhfdp.apps.googleusercontent.com",
           "client_type": 3
         }
