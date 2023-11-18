@@ -1,11 +1,15 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
 import 'package:get/utils.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:simple_waveform_progressbar/simple_waveform_progressbar.dart';
 import 'package:sliding_up_panel2/sliding_up_panel2.dart';
 import 'package:video_application/just_audio_provider.dart';
 import 'package:video_application/service/sounds/selected_sound/selected_sound_service.dart';
@@ -40,168 +44,178 @@ class SoundsScreen extends ConsumerWidget {
         minHeight: 0,
         parallaxEnabled: true,
         borderRadius: BorderRadius.circular(10),
-        backdropEnabled: true,
+        backdropEnabled: false,
         maxHeight: context.height / 1.2,
         panelBuilder: () => soundsProvider.when(
-            data: (data) => Stack(
-                  fit: StackFit.expand,
+            data: (data) => Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CachedNetworkImage(
-                        height: context.height / 2,
-                        width: context.width,
-                        fit: BoxFit.cover,
-                        imageUrl:
-                            "https://thrill.fun/public/uploads/profile_images/${data.data?[soundId].soundOwner?.avtars}"),
-                    BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                      child: Container(
-                        height: context.height / 1.2,
+                    Expanded(
+                        child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 10),
+                        child: InkWell(
+                          child: const Icon(Icons.close_outlined),
+                          onTap: () {
+                            slider.close();
+                          },
+                        ),
+                      ),
+                    )),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                          width: context.width / 1.5,
+                          height: context.height / 2.5,
+                          fit: BoxFit.cover,
+                          imageUrl:
+                              "https://thrill.fun/public/uploads/profile_images/${data.data?[soundId].soundOwner?.avtars}"),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      data.data?[soundId].soundOwner?.name ?? "",
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(0.0, 0.0),
+                            blurRadius: 3.0,
+                            color: Colors.white,
+                          ),
+                          Shadow(
+                            offset: Offset(0.0, 0.0),
+                            blurRadius: 10.0,
+                            color: Colors.white,
+                          ),
+                        ],
                       ),
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: CachedNetworkImage(
-                              height: 150,
-                              width: 150,
-                              fit: BoxFit.cover,
-                              imageUrl:
-                                  "https://thrill.fun/public/uploads/profile_images/${data.data?[soundId].soundOwner?.avtars}"),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          data.data?[soundId].soundOwner?.name ?? "",
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                            shadows: <Shadow>[
-                              Shadow(
-                                offset: Offset(0.0, 0.0),
-                                blurRadius: 3.0,
-                                color: Colors.white,
-                              ),
-                              Shadow(
-                                offset: Offset(0.0, 0.0),
-                                blurRadius: 10.0,
-                                color: Colors.white,
-                              ),
-                            ],
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      data.data?[soundId].sound ?? "",
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        shadows: <Shadow>[
+                          Shadow(
+                            offset: Offset(0.0, 0.0),
+                            blurRadius: 3.0,
+                            color: Colors.white,
                           ),
-                        ),
-                        currentDurationProvider.when(
-                            data: (audio) {
-                              if (audio.inSeconds ==
-                                  audioProvider.duration?.inSeconds) {
-                                audioProvider.seek(Duration.zero);
-                                audioProvider.pause();
-                              }
-                              ;
-                              return InkWell(
-                                  onTap: () async {
-                                    if (audioProvider.playing) {
-                                      audioProvider.pause();
-                                      playerPlaying = false;
-                                    } else {
-                                      audioProvider.play();
-                                      playerPlaying = true;
-                                    }
-                                  },
-                                  child: playingProvider.when(
-                                      data: (isPlaying) => Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              InkWell(
-                                                child: const Icon(
-                                                  Icons.rotate_left,
-                                                  color: Colors.red,
-                                                ),
-                                                onTap: () {
-                                                  audioProvider.seek(audio -
-                                                      const Duration(
-                                                          seconds: 2));
-                                                },
-                                              ),
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.all(20),
-                                                margin:
-                                                    const EdgeInsets.all(20),
-                                                decoration: const BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: Colors.red),
-                                                child: isPlaying &&
-                                                        audio.inSeconds !=
-                                                            audioProvider
-                                                                .duration!
-                                                                .inSeconds
-                                                    ? const Icon(
-                                                        Icons.pause,
-                                                        color: Colors.white,
-                                                      )
-                                                    : const Icon(
-                                                        Icons.play_arrow,
-                                                        color: Colors.white,
-                                                      ),
-                                              ),
-                                              InkWell(
-                                                child: const Icon(
-                                                  Icons.rotate_right,
-                                                  color: Colors.red,
-                                                ),
-                                                onTap: () {
-                                                  audioProvider.seek(audio +
-                                                      const Duration(
-                                                          seconds: 2));
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                      error: (_, s) => Container(),
-                                      loading: () => Container()));
-                            },
+                          Shadow(
+                            offset: Offset(0.0, 0.0),
+                            blurRadius: 10.0,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Expanded(child: SizedBox()),
+                    bufferProvider.when(
+                        data: (bufferPosition) => currentDurationProvider.when(
+                            data: (audio) => Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: 50,
+                                    child: Center(
+                                      child: WaveformProgressbar(
+                                        color: Colors.grey,
+                                        progressColor: Colors.red,
+                                        progress: (audio.inSeconds /
+                                            (audioProvider.duration ??
+                                                    Duration.zero)
+                                                .inSeconds),
+                                        // onTap: (progress) {
+                                        //   // var nextProgress = (progress * 10);
+                                        //   // audioProvider.seek(Duration(
+                                        //   //     seconds: nextProgress.toInt()));
+                                        // },
+                                      ),
+                                    ),
+                                  ),
+                                ),
                             error: (_, l) => Container(),
                             loading: () => Container()),
-                        bufferProvider.when(
-                            data: (bufferPosition) =>
-                                currentDurationProvider.when(
-                                    data: (audio) => Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: ProgressBar(
-                                              thumbRadius: 5.0,
-                                              thumbGlowRadius: 7.0,
-                                              timeLabelType:
-                                                  TimeLabelType.remainingTime,
-                                              timeLabelTextStyle:
-                                                  const TextStyle(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w700),
-                                              thumbColor: Colors.red,
-                                              baseBarColor: Colors.red.shade100,
-                                              thumbGlowColor: Colors.red,
-                                              bufferedBarColor:
-                                                  Colors.red.shade900,
-                                              progressBarColor: Colors.red,
-                                              onSeek: (value) =>
-                                                  audioProvider.seek(value),
-                                              progress: audio,
-                                              buffered: bufferPosition,
-                                              total: audioProvider.duration ??
-                                                  Duration.zero),
-                                        ),
-                                    error: (_, l) => Container(),
-                                    loading: () => Container()),
-                            error: (error, stack) => Container(),
-                            loading: () => Container()),
-                      ],
-                    ),
+                        error: (error, stack) => Container(),
+                        loading: () => Container()),
+                    currentDurationProvider.when(
+                        data: (audio) {
+                          if (audio.inSeconds ==
+                              audioProvider.duration?.inSeconds) {
+                            audioProvider.seek(Duration.zero);
+                            audioProvider.pause();
+                          }
+                          ;
+                          return InkWell(
+                              onTap: () async {
+                                if (audioProvider.playing) {
+                                  audioProvider.pause();
+                                  playerPlaying = false;
+                                } else {
+                                  audioProvider.play();
+                                  playerPlaying = true;
+                                }
+                              },
+                              child: playingProvider.when(
+                                  data: (isPlaying) => Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          InkWell(
+                                            child: const Icon(
+                                              Icons.rotate_left,
+                                              color: Colors.red,
+                                            ),
+                                            onTap: () {
+                                              audioProvider.seek(audio -
+                                                  const Duration(seconds: 2));
+                                            },
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.all(20),
+                                            margin: const EdgeInsets.all(20),
+                                            decoration: const BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.red),
+                                            child: isPlaying &&
+                                                    audio.inSeconds !=
+                                                        audioProvider
+                                                            .duration!.inSeconds
+                                                ? const Icon(
+                                                    Icons.pause,
+                                                    color: Colors.white,
+                                                  )
+                                                : const Icon(
+                                                    Icons.play_arrow,
+                                                    color: Colors.white,
+                                                  ),
+                                          ),
+                                          InkWell(
+                                            child: const Icon(
+                                              Icons.rotate_right,
+                                              color: Colors.red,
+                                            ),
+                                            onTap: () {
+                                              audioProvider.seek(audio +
+                                                  const Duration(seconds: 2));
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                  error: (_, s) => Container(),
+                                  loading: () => Container()));
+                        },
+                        error: (_, l) => Container(),
+                        loading: () => Container()),
                   ],
                 ),
             error: (error, s) {
@@ -209,6 +223,26 @@ class SoundsScreen extends ConsumerWidget {
               return Text(error.toString() + s.toString());
             },
             loading: () => const CircularProgressIndicator()),
+
+        // ProgressBar(
+        //                           thumbRadius: 5.0,
+        //                           thumbGlowRadius: 7.0,
+        //                           timeLabelType:
+        //                               TimeLabelType.remainingTime,
+        //                           timeLabelTextStyle: const TextStyle(
+        //                               fontSize: 12,
+        //                               fontWeight: FontWeight.w700),
+        //                           thumbColor: Colors.red,
+        //                           baseBarColor: Colors.red.shade100,
+        //                           thumbGlowColor: Colors.red,
+        //                           bufferedBarColor: Colors.red.shade900,
+        //                           progressBarColor: Colors.red,
+        //                           onSeek: (value) =>
+        //                               audioProvider.seek(value),
+        //                           progress: audio,
+        //                           buffered: bufferPosition,
+        //                           total: audioProvider.duration ??
+        //                               Duration.zero),
         body: soundsProvider.when(
             data: (data) => ListView.builder(
                 itemCount: data.data?.length ?? 0,
@@ -269,7 +303,7 @@ class SoundsScreen extends ConsumerWidget {
                                       fontWeight: FontWeight.w700),
                                 ),
                                 Text(
-                                  data.data?[index].name ?? "",
+                                  data.data?[index].sound ?? "",
                                   overflow: TextOverflow.ellipsis,
                                 )
                               ],

@@ -1,11 +1,13 @@
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/utils.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:video_application/modal_classes/user_login_model.dart';
+import 'package:video_application/modal_classes/user_model.dart';
 import 'package:video_application/service/authentication/auth_notifier.dart';
 import 'package:video_application/service/authentication/auth_state.dart';
 import 'package:video_application/service/profile/like_videos/liked_videos_service.dart';
@@ -24,8 +26,8 @@ class ProfileScreen extends ConsumerWidget {
     var profileProvider = ref.watch(profileServiceProvider);
 
     var isLogin = ref.watch(authNotiferProvider);
-    UserLoginModel userLoginModel =
-        UserLoginModel.fromJson(jsonDecode(GetStorage().read('user')));
+    UserModel userLoginModel =
+        UserModel.fromJson(jsonDecode(GetStorage().read('user')));
 
     var likedVideosProvider = ref
         .watch(likedVideosServiceProvider(userLoginModel.data?.user?.id ?? 0));

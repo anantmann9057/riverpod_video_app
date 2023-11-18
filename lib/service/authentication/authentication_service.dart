@@ -30,6 +30,23 @@ class AuthenticationService {
     return response.data['data']['otp'].toString();
   }
 
+  Future<UserModel> socialLoginUser(
+      {String socialLoginId = '',
+      String email = "",
+      String firebaseToken = '',
+      String name = ''}) async {
+    var response = await dio.post('SocialLogin', queryParameters: {
+      'social_login_id': socialLoginId,
+      'social_login_type': 'google',
+      'email': email,
+//phone:,
+      'firebase_token': firebaseToken,
+      'name': name,
+    });
+    print(response.data);
+    return userModelFromMap(jsonEncode(response.data));
+  }
+
   Future<UserModel> verifyOtp(int phone, int otp, String firebase_token) async {
     var response = await dio.post('verify-otp', queryParameters: {
       'otp': otp,
@@ -37,25 +54,21 @@ class AuthenticationService {
       'firebase_token': firebase_token
     });
 
-    print(jsonEncode(userModelFromMap(jsonEncode(response.data)).data?.token));
-
-    print(userModelFromMap(jsonEncode(response.data)).data?.user?.name);
-
     getUserDetails();
     return userModelFromMap(jsonEncode(response.data));
   }
 
-  Future<UserLoginModel> getUserDetails() async {
+  Future<UserModel> getUserDetails() async {
     var response = await dio.post('user/get-profile',
         queryParameters: {'id': GetStorage().read('userId')});
 
     Map<String, dynamic> decode_options = jsonDecode(jsonEncode(response.data));
 
-    String user = jsonEncode(UserLoginModel.fromJson(decode_options));
+    String user = jsonEncode(UserModel.fromJson(decode_options));
 
     await GetStorage().write('user', user);
 
-    return userLoginModelFromJson(jsonEncode(response.data));
+    return UserModel.fromJson(response.data);
   }
 
   signOutUser() async {

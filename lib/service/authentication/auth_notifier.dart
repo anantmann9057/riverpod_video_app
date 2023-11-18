@@ -32,8 +32,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
         state == AuthState.Authenticated) {
       state = AuthState.Authenticated;
       await _authenticationService.getUserDetails();
+      print('log in');
     } else {
-      loginUser();
+      state = AuthState.Unauthenticated;
     }
     print(state);
   }
@@ -43,20 +44,24 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = AuthState.Unauthenticated;
   }
 
-  loginUser() async {
-    await _authenticationService.sendOtp(9001155788).then((value) async {
-      await _authenticationService
-          .verifyOtp(9001155788, int.parse(value),
-              'cjDUnPBnRguHVAm6i0Ajxz:APA91bEOgXWBTvddSb2c1jpO0kUu22f0HKD22osSmmVa_QphfFv3mbxEnsKnwsIUZytmIQbRSYUP-MP9gX7br0_FIlserpJ2s9OtfP1NMIDgYPvdqG8oVTwv58yLQOf94Q45Mh76QrTP')
-          .then((value) async {
-        if ((value.status ?? false)) {
-          await GetStorage().write('token', value.data?.token ?? '');
-
-          await GetStorage().write('userId', value.data?.user?.id ?? 0);
-          await _authenticationService.getUserDetails();
-          state = AuthState.Authenticated;
-        }
-      });
+  loginUser(
+      {String socialLoginId = '',
+      String email = "",
+      String firebaseToken = '',
+      String name = ''}) async {
+    await _authenticationService
+        .socialLoginUser(
+            socialLoginId: socialLoginId,
+            email: email,
+            firebaseToken: firebaseToken,
+            name: name)
+        .then((value) async {
+      if ((value.status ?? false)) {
+        await GetStorage().write('token', value.data?.token ?? '');
+        await GetStorage().write('userId', value.data?.user?.id ?? 0);
+        await _authenticationService.getUserDetails();
+        state = AuthState.Authenticated;
+      }
     });
   }
 }

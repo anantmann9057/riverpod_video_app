@@ -49,6 +49,13 @@ dependencies:
   get_storage: ^2.1.1
   just_audio: ^0.9.35
   audio_video_progress_bar: ^2.0.1
+  simple_waveform_progressbar: ^0.0.3
+  firebase_auth: ^4.14.0
+  google_sign_in: ^6.1.6
+  firebase_messaging: ^14.7.4
+  permission_handler: ^11.0.1
+  flutter_local_notifications: ^16.1.0
+  cloud_firestore: ^4.13.1
 
 dev_dependencies:
   flutter_test:
@@ -59,7 +66,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

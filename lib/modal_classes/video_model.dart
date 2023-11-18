@@ -334,7 +334,7 @@ class Pagination {
   });
 
   factory Pagination.fromMap(Map<String, dynamic> json) => Pagination(
-        currentPage: json["current_page"],
+        currentPage: json["current_page"] ?? 0,
         lastPage: json["last_page"],
         perPage: json["per_page"],
         total: json["total"],
