@@ -7,7 +7,7 @@ part of 'hashtag_videos_service.dart';
 // **************************************************************************
 
 String _$hashtagVideosServiceHash() =>
-    r'5486c037cb5deb7483cbf701ff415c0984c10ae8';
+    r'53698033792ae1f7ca5be5c18826f1f4d62bbfa1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,10 +31,10 @@ class _SystemHash {
 }
 
 abstract class _$HashtagVideosService
-    extends BuildlessAutoDisposeAsyncNotifier<HashtagVideosModel> {
+    extends BuildlessAsyncNotifier<List<Datum>> {
   late final int arg;
 
-  FutureOr<HashtagVideosModel> build(
+  FutureOr<List<Datum>> build(
     int arg,
   );
 }
@@ -44,8 +44,7 @@ abstract class _$HashtagVideosService
 const hashtagVideosServiceProvider = HashtagVideosServiceFamily();
 
 /// See also [HashtagVideosService].
-class HashtagVideosServiceFamily
-    extends Family<AsyncValue<HashtagVideosModel>> {
+class HashtagVideosServiceFamily extends Family<AsyncValue<List<Datum>>> {
   /// See also [HashtagVideosService].
   const HashtagVideosServiceFamily();
 
@@ -83,8 +82,8 @@ class HashtagVideosServiceFamily
 }
 
 /// See also [HashtagVideosService].
-class HashtagVideosServiceProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    HashtagVideosService, HashtagVideosModel> {
+class HashtagVideosServiceProvider
+    extends AsyncNotifierProviderImpl<HashtagVideosService, List<Datum>> {
   /// See also [HashtagVideosService].
   HashtagVideosServiceProvider(
     int arg,
@@ -115,7 +114,7 @@ class HashtagVideosServiceProvider extends AutoDisposeAsyncNotifierProviderImpl<
   final int arg;
 
   @override
-  FutureOr<HashtagVideosModel> runNotifierBuild(
+  FutureOr<List<Datum>> runNotifierBuild(
     covariant HashtagVideosService notifier,
   ) {
     return notifier.build(
@@ -140,8 +139,8 @@ class HashtagVideosServiceProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<HashtagVideosService,
-      HashtagVideosModel> createElement() {
+  AsyncNotifierProviderElement<HashtagVideosService, List<Datum>>
+      createElement() {
     return _HashtagVideosServiceProviderElement(this);
   }
 
@@ -159,15 +158,14 @@ class HashtagVideosServiceProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 }
 
-mixin HashtagVideosServiceRef
-    on AutoDisposeAsyncNotifierProviderRef<HashtagVideosModel> {
+mixin HashtagVideosServiceRef on AsyncNotifierProviderRef<List<Datum>> {
   /// The parameter `arg` of this provider.
   int get arg;
 }
 
 class _HashtagVideosServiceProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<HashtagVideosService,
-        HashtagVideosModel> with HashtagVideosServiceRef {
+    extends AsyncNotifierProviderElement<HashtagVideosService, List<Datum>>
+    with HashtagVideosServiceRef {
   _HashtagVideosServiceProviderElement(super.provider);
 
   @override

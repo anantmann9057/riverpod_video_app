@@ -23,12 +23,13 @@ class SoundsService extends _$SoundsService {
       }));
 
   @override
-  FutureOr<SoundsModel> build() {
+  FutureOr<List<Datum>> build(int arg) {
     return getSoundsList();
   }
 
-  Future<SoundsModel> getSoundsList() async {
-    var response = await dio.post(SOUNDS_LIST);
-    return soundsModelFromMap(jsonEncode(response.data));
+  Future<List<Datum>> getSoundsList() async {
+    var response = await dio.post(SOUNDS_LIST,queryParameters: {'page':arg});
+    state = AsyncData(soundsModelFromMap(jsonEncode(response.data)).data!);
+    return soundsModelFromMap(jsonEncode(response.data)).data!;
   }
 }

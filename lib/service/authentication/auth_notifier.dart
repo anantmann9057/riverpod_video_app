@@ -1,16 +1,18 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/utils.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:video_application/modal_classes/user_login_model.dart';
 import 'package:video_application/service/authentication/auth_state.dart';
+import 'package:video_application/service/authentication/authentication.dart';
 import 'package:video_application/service/authentication/authentication_service.dart';
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  final AuthenticationService _authenticationService;
+  final Authentication _authenticationService;
 
   AuthNotifier(this._authenticationService) : super(AuthState.PROCESSING) {
     isUserLoggedIn();
@@ -31,7 +33,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (GetStorage().read('token') != null ||
         state == AuthState.Authenticated) {
       state = AuthState.Authenticated;
-      await _authenticationService.getUserDetails();
       print('log in');
     } else {
       state = AuthState.Unauthenticated;
@@ -39,32 +40,21 @@ class AuthNotifier extends StateNotifier<AuthState> {
     print(state);
   }
 
-  signOutUser() async {
-    await _authenticationService.signOutUser();
+  Future<void> signOutUser() async {
+    await _authenticationService.signOut();
     state = AuthState.Unauthenticated;
   }
 
   loginUser(
-      {String socialLoginId = '',
-      String email = "",
-      String firebaseToken = '',
-      String name = ''}) async {
+      {required BuildContext context}) async {
     await _authenticationService
-        .socialLoginUser(
-            socialLoginId: socialLoginId,
-            email: email,
-            firebaseToken: firebaseToken,
-            name: name)
+        .signInWithGoogle(
+           context)
         .then((value) async {
-      if ((value.status ?? false)) {
-        await GetStorage().write('token', value.data?.token ?? '');
-        await GetStorage().write('userId', value.data?.user?.id ?? 0);
-        await _authenticationService.getUserDetails();
-        state = AuthState.Authenticated;
-      }
+      state = AuthState.Authenticated;
     });
   }
 }
 
 final authNotiferProvider = StateNotifierProvider<AuthNotifier, AuthState>(
-    (ref) => AuthNotifier(ref.watch(authServiceProvider)));
+    (ref) => AuthNotifier(ref.watch(authenticationProvider)));

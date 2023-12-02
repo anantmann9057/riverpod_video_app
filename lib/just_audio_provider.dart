@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:just_audio/just_audio.dart';
 
 final playlistProvider = StateProvider<String>((ref) {
-  return '';
+  return 'https://thrillvideonew.s3.ap-south-1.amazonaws.com/sound/1685960921650.mp3';
 });
 
 final audioPlayerProvider = StateProvider.autoDispose<AudioPlayer>((ref) {

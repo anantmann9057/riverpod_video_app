@@ -7,15 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_application/firebase_options.dart';
-import 'package:video_application/modal_classes/user_login_model.dart';
-import 'package:video_application/modal_classes/user_model.dart';
 import 'package:video_application/service/authentication/auth_notifier.dart';
 import 'package:video_application/service/authentication/auth_state.dart';
 import 'package:video_application/service/authentication/authentication.dart';
 import 'package:video_application/service/authentication/authentication_service.dart';
 import 'package:video_application/service/push_notification_service.dart';
 import 'package:video_application/ui/discover_screen.dart';
-import 'package:video_application/ui/hashtag_details_screen.dart';
 import 'package:video_application/ui/home_screen.dart';
 import 'package:video_application/ui/profile_screen.dart';
 import 'package:video_application/ui/sounds_screen.dart';
@@ -91,7 +88,7 @@ class MyApp extends ConsumerWidget {
               ),
             );
           },
-          loading: () => Align(
+          loading: () => const Align(
                 alignment: Alignment.center,
                 child: CircularProgressIndicator(),
               )),
@@ -107,7 +104,7 @@ class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var screens = [
-      HomeScreen(),
+      const HomeScreen(),
       DiscoverScreen(),
       SoundsScreen(),
       ProfileScreen()
@@ -118,22 +115,30 @@ class Home extends ConsumerWidget {
     var _user = ref.watch(authStateProvider);
     var serviceProvider = ref.watch(authServiceProvider);
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+        decoration: BoxDecoration(
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.3))]
+        ),
+        child: BottomNavigationBar(
+          elevation: 0,
           selectedLabelStyle: TextStyle(color: Colors.red),
           unselectedLabelStyle: TextStyle(color: Colors.black),
-          currentIndex: ref.read(selectedBottomIndex.notifier).state,
+          currentIndex: ref.watch(selectedBottomIndex.notifier).state,
           onTap: (index) async {
             if (index == 3) {
-              if (ref.read(authStateProvider).value == null) {
+              if (ref.watch(authStateProvider).value == null) {
                 await _auth.signInWithGoogle(context).then((value) {
-                  ref.read(selectedBottomIndex.notifier).state = index;
-                  ref.read(selectedScreen.notifier).state = index;
+                  ref.watch(selectedBottomIndex.notifier).state = index;
+                  ref.watch(selectedScreen.notifier).state = index;
                 });
               } else {
                 await serviceProvider.getUserDetails();
                 // await _auth.signOut();
-                ref.read(selectedBottomIndex.notifier).state = index;
-                ref.read(selectedScreen.notifier).state = index;
+                ref.watch(selectedBottomIndex.notifier).state = index;
+                ref.watch(selectedScreen.notifier).state = index;
               }
               // if (ref.watch(authNotiferProvider) == AuthState.Authenticated) {
               //   ref.read(selectedBottomIndex.notifier).state = index;
@@ -142,44 +147,48 @@ class Home extends ConsumerWidget {
               //   ref.watch(authNotiferProvider.notifier).loginUser();
               // }
             } else {
-              ref.read(selectedBottomIndex.notifier).state = index;
-              ref.read(selectedScreen.notifier).state = index;
+              ref.watch(selectedBottomIndex.notifier).state = index;
+              ref.watch(selectedScreen.notifier).state = index;
             }
           },
           items: [
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
+                backgroundColor: Colors.transparent.withOpacity(0.0),
                 icon: Icon(
                   Icons.home,
                   color: Colors.red,
                 ),
                 label: 'Home'),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
+                backgroundColor: Colors.transparent.withOpacity(0.0),
                 icon: Icon(Icons.dashboard, color: Colors.red),
                 label: 'Discover'),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
+                backgroundColor: Colors.transparent.withOpacity(0.0),
                 icon: Icon(Icons.music_note, color: Colors.red),
                 label: 'Wallet'),
             BottomNavigationBarItem(
+                backgroundColor: Colors.transparent.withOpacity(0.0),
                 icon: _user.when(
                     data: (user) => user != null
                         ? ClipOval(
-                            child: CachedNetworkImage(
-                                height: 25,
-                                width: 25,
-                                fit: BoxFit.cover,
-                                imageUrl: user?.photoURL ?? ''),
-                          )
+                      child: CachedNetworkImage(
+                          height: 25,
+                          width: 25,
+                          fit: BoxFit.cover,
+                          imageUrl: user?.photoURL ?? ''),
+                    )
                         : ref.read(authNotiferProvider) ==
-                                AuthState.Authenticated
-                            ? CircularProgressIndicator()
-                            : Icon(
-                                Icons.person,
-                                color: Colors.red,
-                              ),
+                        AuthState.Authenticated
+                        ? CircularProgressIndicator()
+                        : Icon(
+                      Icons.person,
+                      color: Colors.red,
+                    ),
                     error: (error, trace) => Icon(Icons.person),
                     loading: () => CircularProgressIndicator()),
                 label: 'Profile')
-          ]),
+          ]),),
       body: screens[ref.read(selectedScreen)],
     );
   }

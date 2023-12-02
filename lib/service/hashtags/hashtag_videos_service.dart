@@ -2,25 +2,32 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:video_application/modal_classes/hashtag_video_model.dart';
 import 'package:video_application/service/api_service.dart';
 part 'hashtag_videos_service.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class HashtagVideosService extends _$HashtagVideosService {
-  var dio = Dio(BaseOptions(baseUrl: BASE_URL, headers: {
-    'Authorization':
-        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiYzc2MGQxZjdhNDcyMTM0NmViMTZjYmM3NDc4OWYzODgxOTFjZDIyNzEwNTkwMjE5M2FlNWNiMzk0ZGQxMTg4YWRlNjcwZmI1NTA4OWI1MGEiLCJpYXQiOjE2OTAzNTI2NDkuNDM3NDQzMDE3OTU5NTk0NzI2NTYyNSwibmJmIjoxNjkwMzUyNjQ5LjQzNzQ0Mzk3MTYzMzkxMTEzMjgxMjUsImV4cCI6MTcyMTk3NTA0OS40MzQ2ODY4OTkxODUxODA2NjQwNjI1LCJzdWIiOiI2MCIsInNjb3BlcyI6W119.IL7t1NNVuDE7eanE7hLZfpxp7cqLK-ORAHIKZgK0BswrovGExsBFE_9tJFEyJR4WvbsaakRY0BZTIbA9t1xPEfVhDJZsvvZ-UnP49bcTXAY75edktvIIilRhR-J4QtYfhAUtHF673kznsjvPKNnlJX1MJsyyJRAgDtOulvJEMQG-3ziKumqSaxAQUvLUg5Qjm-YShTPzrzGQ9miAD53GrbndwWwgT8X9jp5j3DyvQKFfdrVXtXutKeDkJA_SgiEuqyFgO38lXGGYaSPNsLZyVs871GdoML66u2-fq7yNBT45cu0Eq0bB50ddwIzNsqzAs9OVUq1Pa_b46caE1N3mRYihr6roIM535kriJCK-e5ov8Ucj7ym32dYaIDdP6U9uNMFieYSZW6mZqbKudZRpN6QwDU4E7t2TbNpPLmPqfnvmhavhjnMBP_MQybvJti7UmyS6iHIMCssZtq_c6MNtRgy_jFYaHUiSzVcpojoI-3M8gnw5fQVrvnbP6rYBUuKrkHmdCBju2L4twyahYrRbbXuHA07pm-ecJ1Pb8AIieYj2j-E5OSwSP2gVx8It8tCyMIZWqm--p3p3v9OzUHV0zK5wrLdRGQvsv-iDBeOiJzdMynRR3FLFi6Zic_WPfs72LRszhVWDgrdqQ4zjX8cbtpgb2KqwbLl5Nio5M2WGZ3w'
-  }));
+  var dio = Dio(BaseOptions(
+      baseUrl: 'https://thrill.fun/api/',
+      headers: {
+        'Authorization': 'Bearer ${GetStorage().read('token')} ',
+        "Accept": "application/json"
+      },
+      followRedirects: false,
+      validateStatus: (status) {
+        return status! < 500;
+      }));
   @override
-  FutureOr<HashtagVideosModel> build(int arg) {
-    return getHashtagById(arg);
+  FutureOr<List<Datum>> build(int arg) {
+    return getHashtagById(1);
   }
 
-  Future<HashtagVideosModel> getHashtagById(int hastagid) async {
+  Future<List<Datum>> getHashtagById(int page) async {
     var response = await dio
-        .post(HASHTAG_BY_ID, queryParameters: {'hashtag_id': hastagid});
-    return hashtagVideosModelFromMap(jsonEncode(response.data));
+        .post(HASHTAG_BY_ID, queryParameters: {'hashtag_id': arg,"page":page});
+    return hashtagVideosModelFromMap(jsonEncode(response.data)).data??[];
   }
 }

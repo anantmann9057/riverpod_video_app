@@ -15,3 +15,6 @@ const HASHTAG_BY_ID = "hashtag/get-videos-by-hashtag";
 
 const SOUNDS_LIST = 'sound/list';
 const GET_SOUND = 'sound/get';
+
+const LIKE_VIDEO="/video/like";
+const LIKE_STATUS='/video/like-by-id';

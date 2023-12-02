@@ -13,7 +13,7 @@ class HashtagModel {
   bool? status;
   bool? error;
   String? message;
-  List<Datum>? data;
+  List<HashtagList>? data;
   Pagination? pagination;
 
   HashtagModel({
@@ -30,7 +30,7 @@ class HashtagModel {
         message: json["message"],
         data: json["data"] == null
             ? []
-            : List<Datum>.from(json["data"]!.map((x) => Datum.fromMap(x))),
+            : List<HashtagList>.from(json["data"]!.map((x) => HashtagList.fromMap(x))),
         pagination: json["pagination"] == null
             ? null
             : Pagination.fromMap(json["pagination"]),
@@ -46,7 +46,7 @@ class HashtagModel {
       };
 }
 
-class Datum {
+class HashtagList {
   int? id;
   int? userId;
   String? name;
@@ -56,7 +56,7 @@ class Datum {
   DateTime? updatedAt;
   int? isFavouriteHashtagCount;
 
-  Datum({
+  HashtagList({
     this.id,
     this.userId,
     this.name,
@@ -67,7 +67,7 @@ class Datum {
     this.isFavouriteHashtagCount,
   });
 
-  factory Datum.fromMap(Map<String, dynamic> json) => Datum(
+  factory HashtagList.fromMap(Map<String, dynamic> json) => HashtagList(
         id: json["id"],
         userId: json["user_id"],
         name: json["name"],

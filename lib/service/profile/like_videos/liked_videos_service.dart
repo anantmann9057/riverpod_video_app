@@ -10,7 +10,7 @@ import 'package:video_application/service/api_service.dart';
 part 'liked_videos_service.g.dart';
 
 @riverpod
-class LikedVideosService extends _$LikedVideosService {
+class LikedVideosService extends _$LikedVideosService{
   var dio = Dio(BaseOptions(
       baseUrl: 'https://thrill.fun/api/',
       headers: {
@@ -23,15 +23,13 @@ class LikedVideosService extends _$LikedVideosService {
       }));
 
   @override
-  FutureOr<UserVideosModel> build(int arg) {
-    return getUserLikedVideos(arg);
+  FutureOr<List<UserVideos>> build(int arg) {
+    return getUserLikedVideos();
   }
 
-  Future<UserVideosModel> getUserLikedVideos(int userId) async {
+  Future<List<UserVideos>> getUserLikedVideos() async {
     var response =
-        await dio.post(USER_LIKED_VIDEOS, queryParameters: {'user_Id': userId});
-
-    state = AsyncData(userVideosModelFromMap(jsonEncode(response.data)));
-    return userVideosModelFromMap(jsonEncode(response.data));
+        await dio.post(USER_LIKED_VIDEOS, queryParameters: {'page':arg});
+    return userVideosModelFromMap(jsonEncode(response.data)).data;
   }
 }

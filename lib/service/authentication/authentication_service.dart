@@ -72,6 +72,7 @@ class AuthenticationService {
   }
 
   signOutUser() async {
+
     await GetStorage().remove('token');
     await GetStorage().remove('userId');
     await GetStorage().remove('user');

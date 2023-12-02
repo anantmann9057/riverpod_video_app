@@ -22,13 +22,12 @@ class PrivateVideosService extends _$PrivateVideosService {
       }));
 
   @override
-  FutureOr<UserVideosModel> build() {
+  FutureOr<List<UserVideos>> build(int arg) {
     return getUserPrivateVideos();
   }
 
-  Future<UserVideosModel> getUserPrivateVideos() async {
-    var response = await dio.get(USER_PRIVATE_VIDEOS);
-    state = AsyncData(userVideosModelFromMap(jsonEncode(response.data)));
-    return userVideosModelFromMap(jsonEncode(response.data));
+  Future<List<UserVideos>> getUserPrivateVideos() async {
+    var response = await dio.get(USER_PRIVATE_VIDEOS,queryParameters: {'page':arg});
+    return userVideosModelFromMap(jsonEncode(response.data)).data;
   }
 }
